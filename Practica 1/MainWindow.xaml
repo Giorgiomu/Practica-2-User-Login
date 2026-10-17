@@ -1,0 +1,326 @@
+﻿<Window x:Class="MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Practica_1"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="720" Width="1200" FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <!-- Colores y pinceles reutilizables -->
+        <SolidColorBrush x:Key="AccentBrush" Color="#0b6fb8" />
+        <SolidColorBrush x:Key="AccentDarkBrush" Color="#07395b" />
+        <SolidColorBrush x:Key="PanelBackground" Color="#071025" />
+
+        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Foreground" Value="#8fbfff" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="{Binding Color, Source={StaticResource AccentBrush}}" Offset="0" />
+                        <GradientStop Color="{Binding Color, Source={StaticResource AccentDarkBrush}}" Offset="1" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderBrush" Value="#3aa0ff"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" CornerRadius="10" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#00b4ff" BlurRadius="14" ShadowDepth="0"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#7fd7ff"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+            <Setter Property="Background" Value="#0f1724"/>
+            <Setter Property="BorderBrush" Value="#0b3a66"/>
+            <Setter Property="Foreground" Value="#9fcaff"/>
+        </Style>
+    </Window.Resources>
+    <Window.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#000000" Offset="0" />
+            <GradientStop Color="#001842" Offset="1" />
+        </LinearGradientBrush>
+    </Window.Background>
+    <Grid Margin="0,0,0,-52">
+        <!-- Outer layout: two columns (sidebar + main) and rows for top nav and content -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="779*" />
+            <ColumnDefinition Width="6*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Top bar -->
+        <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#071025" BorderBrush="#09314a" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo en esquina superior izquierda (ajustado) -->
+                <Image x:Name="logoImage" Grid.Column="0" Source="/Practica 1;component/Images/Blizzard.png" Width="256" Height="216" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="-19,0,0,0" Grid.ColumnSpan="2" />
+
+                <!-- Center navigation -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="100,0,0,0">
+                    <TextBlock Text="TIENDA" FontSize="18" FontWeight="Bold" Foreground="#8fbfff" Margin="8,0" />
+                    <TextBlock Text="BIBLIOTECA" FontSize="18" FontWeight="Bold" Foreground="#8fbfff" Margin="10,0" />
+                    <TextBlock Text="COMUNIDAD" FontSize="18" FontWeight="Bold" Foreground="#8fbfff" Margin="10,0" />
+                    <TextBlock Text="SOPORTE" FontSize="18" FontWeight="Bold" Foreground="#8fbfff" Margin="10,0" />
+                    <TextBlock Text="CHAT" FontSize="18" FontWeight="Bold" Foreground="#8fbfff" Margin="10,0" />
+                </StackPanel>
+
+                <!-- Perfil a la derecha (añadir logo JAMEL y botón cerrar sesión) -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,0,0">
+                    <!-- WelcomeText oculto en la cabecera para evitar solapamientos; se mostrará en la barra lateral -->
+                    <TextBlock x:Name="WelcomeText" Text="" FontSize="14" Foreground="#8fbfff" VerticalAlignment="Center" Margin="0,0,12,0" Visibility="Collapsed" />
+                    <Image x:Name="jamelLogo" Source="/Practica 1;component/Images/jamel.png" Width="36" Height="36" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <TextBlock Text="mi perfil" FontSize="12" Foreground="#8fbfff" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <Button x:Name="LogoutButton" Content="Cerrar Sesión" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,6,0" Click="LogoutButton_Click" />
+                    <Button x:Name="ExitAppButton" Content="Cerrar aplicación" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,0,0" Click="ExitAppButton_Click" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Left sidebar -->
+        <Border Grid.Row="1" Grid.Column="0" Margin="20,20,20,75" CornerRadius="16" BorderBrush="#09314a" BorderThickness="1" Background="#071025">
+            <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="18">
+                <!-- Foto de usuario (poner Images/user.png en el proyecto) -->
+                <Image Width="96" Height="96" Source="pack://application:,,,/Images/user.png" HorizontalAlignment="Center" Margin="0,6,0,6">
+                    <Image.Clip>
+                        <EllipseGeometry Center="48,48" RadiusX="48" RadiusY="48" />
+                    </Image.Clip>
+                </Image>
+                <!-- Saludo en la barra lateral (encima de Destacados) -->
+                <TextBlock x:Name="SidebarWelcomeText" Text="" FontSize="14" FontWeight="SemiBold" Foreground="#8fbfff" HorizontalAlignment="Left" Margin="6,6,0,6" />
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0">
+                    <TextBlock Text="Destacados" FontSize="16" Margin="10" Foreground="White" />
+                    <TextBlock Text="Mis juegos" FontSize="16" Margin="10" Foreground="White" />
+                    <TextBlock Text="Configuración" FontSize="16" Margin="10" Foreground="White" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Main content area -->
+        <Grid Grid.Row="1" Grid.Column="1" Margin="10,20,34,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Catálogo de juegos: UniformGrid para ocupar todo el espacio y mostrar 12 juegos -->
+            <Border Grid.Row="1" BorderBrush="#09314a" BorderThickness="2" Margin="20,20,20,64">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#06121c" Offset="0" />
+                        <GradientStop Color="#001832" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid Margin="0,0,0,29">
+                    <Grid.Resources>
+                        <!-- Estilo para tarjetas de juego -->
+                        <Style x:Key="GameButtonStyle" TargetType="Button">
+                            <Setter Property="Background" Value="#0f1724" />
+                            <Setter Property="BorderBrush" Value="#0b3a66" />
+                            <Setter Property="BorderThickness" Value="1" />
+                            <Setter Property="Padding" Value="6" />
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Bd" CornerRadius="8" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+                                            <Grid>
+                                                <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="RenderTransform">
+                                                    <Setter.Value>
+                                                        <ScaleTransform ScaleX="1.03" ScaleY="1.03" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter TargetName="Bd" Property="Effect">
+                                                    <Setter.Value>
+                                                        <DropShadowEffect Color="#00b3ff" BlurRadius="12" ShadowDepth="4" Opacity="0.6" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Grid.Resources>
+
+                    <UniformGrid Rows="3" Columns="4" Margin="12">
+                        <!-- Cada tarjeta incluye imagen, título, precio y botón añadir -->
+                        <Button Style="{StaticResource GameButtonStyle}">
+                            <StackPanel>
+                                <Image Source="pack://application:,,,/Images/game1.jpg" Height="90" Stretch="UniformToFill" />
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                                    <TextBlock Text="€14.99" Foreground="#8fbfff" FontWeight="Bold" Margin="0,0,8,0" />
+                                    <Button Content="Añadir" Width="70" Height="24" Background="#00b3ff" Foreground="#001" BorderThickness="0" Tag="JUEGO 1" Click="AddToCart_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource GameButtonStyle}">
+                            <StackPanel>
+                                <Image Source="pack://application:,,,/Images/game2.jpg" Height="90" Stretch="UniformToFill" />
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                                    <TextBlock Text="€9.99" Foreground="#8fbfff" FontWeight="Bold" Margin="0,0,8,0" />
+                                    <Button Content="Añadir" Width="70" Height="24" Background="#00b3ff" Foreground="#001" BorderThickness="0" Tag="JUEGO 2" Click="AddToCart_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource GameButtonStyle}">
+                            <StackPanel>
+                                <Image Source="pack://application:,,,/Images/game3.jpg" Height="90" Stretch="UniformToFill" />
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                                    <TextBlock Text="€19.99" Foreground="#8fbfff" FontWeight="Bold" Margin="0,0,8,0" />
+                                    <Button Content="Añadir" Width="70" Height="24" Background="#00b3ff" Foreground="#001" BorderThickness="0" Tag="JUEGO 3" Click="AddToCart_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource GameButtonStyle}">
+                            <StackPanel>
+                                <Image Source="pack://application:,,,/Images/game4.jpg" Height="90" Stretch="UniformToFill" />
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                                    <TextBlock Text="€4.99" Foreground="#8fbfff" FontWeight="Bold" Margin="0,0,8,0" />
+                                    <Button Content="Añadir" Width="70" Height="24" Background="#00b3ff" Foreground="#001" BorderThickness="0" Tag="JUEGO 4" Click="AddToCart_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource GameButtonStyle}">
+                            <StackPanel>
+                                <Image Source="pack://application:,,,/Images/game5.png" Height="90" Stretch="UniformToFill" />
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                                    <TextBlock Text="€7.50" Foreground="#8fbfff" FontWeight="Bold" Margin="0,0,8,0" />
+                                    <Button Content="Añadir" Width="70" Height="24" Background="#00b3ff" Foreground="#001" BorderThickness="0" Tag="JUEGO 5" Click="AddToCart_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource GameButtonStyle}">
+                            <StackPanel>
+                                <Image Source="pack://application:,,,/Images/game6.jpg" Height="90" Stretch="UniformToFill" />
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                                    <TextBlock Text="€12.00" Foreground="#8fbfff" FontWeight="Bold" Margin="0,0,8,0" />
+                                    <Button Content="Añadir" Width="70" Height="24" Background="#00b3ff" Foreground="#001" BorderThickness="0" Tag="JUEGO 6" Click="AddToCart_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource GameButtonStyle}">
+                            <StackPanel>
+                                <Image Source="pack://application:,,,/Images/game7.jpg" Height="90" Stretch="UniformToFill" />
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                                    <TextBlock Text="€5.99" Foreground="#8fbfff" FontWeight="Bold" Margin="0,0,8,0" />
+                                    <Button Content="Añadir" Width="70" Height="24" Background="#00b3ff" Foreground="#001" BorderThickness="0" Tag="JUEGO 7" Click="AddToCart_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource GameButtonStyle}">
+                            <StackPanel>
+                                <Image Source="pack://application:,,,/Images/game8.jpg" Height="90" Stretch="UniformToFill" />
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                                    <TextBlock Text="€3.49" Foreground="#8fbfff" FontWeight="Bold" Margin="0,0,8,0" />
+                                    <Button Content="Añadir" Width="70" Height="24" Background="#00b3ff" Foreground="#001" BorderThickness="0" Tag="JUEGO 8" Click="AddToCart_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource GameButtonStyle}">
+                            <StackPanel>
+                                <Image Source="pack://application:,,,/Images/game9.jpg" Height="90" Stretch="UniformToFill" />
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                                    <TextBlock Text="€11.25" Foreground="#8fbfff" FontWeight="Bold" Margin="0,0,8,0" />
+                                    <Button Content="Añadir" Width="70" Height="24" Background="#00b3ff" Foreground="#001" BorderThickness="0" Tag="JUEGO 9" Click="AddToCart_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource GameButtonStyle}">
+                            <StackPanel>
+                                <Image Source="pack://application:,,,/Images/game10.jpg" Height="90" Stretch="UniformToFill" />
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                                    <TextBlock Text="€2.99" Foreground="#8fbfff" FontWeight="Bold" Margin="0,0,8,0" />
+                                    <Button Content="Añadir" Width="70" Height="24" Background="#00b3ff" Foreground="#001" BorderThickness="0" Tag="JUEGO 10" Click="AddToCart_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource GameButtonStyle}">
+                            <StackPanel>
+                                <Image Source="pack://application:,,,/Images/game11.jpg" Height="90" Stretch="UniformToFill" />
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                                    <TextBlock Text="€16.49" Foreground="#8fbfff" FontWeight="Bold" Margin="0,0,8,0" />
+                                    <Button Content="Añadir" Width="70" Height="24" Background="#00b3ff" Foreground="#001" BorderThickness="0" Tag="JUEGO 11" Click="AddToCart_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource GameButtonStyle}">
+                            <StackPanel>
+                                <Image Source="pack://application:,,,/Images/game12.jpg" Height="90" Stretch="UniformToFill" />
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                                    <TextBlock Text="€6.75" Foreground="#8fbfff" FontWeight="Bold" Margin="0,0,8,0" />
+                                    <Button Content="Añadir" Width="70" Height="24" Background="#00b3ff" Foreground="#001" BorderThickness="0" Tag="JUEGO 12" Click="AddToCart_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+                    </UniformGrid>
+                </Grid>
+            </Border>
+        </Grid>
+
+    </Grid>
+</Window>
